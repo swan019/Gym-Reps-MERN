@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Workout from '../components/Workout';
 import '../App.css'
 import NewWorkoutForm from '../components/NewWorkoutForm';
+import { useWorkoutsContext } from '../hooks/useWorkoutsContext';
+
 
 function Home() {
-  const [workouts, setWorkouts] = useState(null);
+  const { workouts, dispatch } = useWorkoutsContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -13,7 +15,7 @@ function Home() {
         const response = await fetch("http://localhost:4000/api/workouts/");
         const json = await response.json();
         if (response.ok) {
-          setWorkouts(json);
+          dispatch({ type: 'SET_WORKOUTS', payload: json });
         }
       } catch (error) {
         console.error("Error fetching workouts:", error);
@@ -46,7 +48,7 @@ function Home() {
 
           </div>
         )}
-          <NewWorkoutForm/>
+        <NewWorkoutForm />
       </div>
 
 

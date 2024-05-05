@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import '../App.css';
+import { useWorkoutsContext } from '../hooks/useWorkoutsContext';
+import { json } from 'react-router-dom';
 
 const NewWorkoutForm = () => {
   const [title, setTitle] = useState('');
-  const [load, setLoad] = useState(0);
-  const [reps, setReps] = useState(0);
+  const [load, setLoad] = useState('');
+  const [reps, setReps] = useState('');
   const [error, setError] = useState('');
+  const {dispatch} = useWorkoutsContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,14 +24,17 @@ const NewWorkoutForm = () => {
         },
         body: JSON.stringify({ title, load, reps }),
       });
+
+      const json = await response.json();
       if (response.ok) {
         // Handle success
         setTitle('');
-        setLoad(0);
-        setReps(0);
+        setLoad('');
+        setReps('');
         // setError('Data sent successfully');
         setError('');
         console.log('Data sent successfully');
+        dispatch({type:'CREATE_WORKOUTS', payload:json});
 
       } else {
         // Handle error
@@ -47,7 +53,7 @@ const NewWorkoutForm = () => {
       <div className='formBox rounded-lg'>
         <form onSubmit={handleSubmit} className='max-w-xl mx-auto form'>
           <div className='mb-4'>
-            <label className='font-bold mb-2 text-lg'>Title:</label>
+            <label className='font-bold mb-2 text-lg p-1'>Exersize Title</label>
             <input
               type='text'
               className='form-input mt-1 block w-full p-2 rounded-lg bg-gray-700'
@@ -56,7 +62,7 @@ const NewWorkoutForm = () => {
             />
           </div>
           <div className='mb-4'>
-            <label className='font-bold mb-2 text-lg'>Load</label>
+            <label className='font-bold mb-2 text-lg p-1'>Load</label>
             <input
               type='number'
               className='form-input mt-1 block w-full p-2 rounded-lg bg-gray-700'
@@ -65,7 +71,7 @@ const NewWorkoutForm = () => {
             />
           </div>
           <div className='mb-4'>
-            <label className='font-bold mb-2 text-lg'>Reps</label>
+            <label className='font-bold mb-2 text-lg p-1'>Reps</label>
             <input
               type='number'
               className='form-input mt-1 block w-full p-2 rounded-lg bg-gray-700'
@@ -76,10 +82,10 @@ const NewWorkoutForm = () => {
           {error && (
             <div className='text-red-500 text-sm mb-4'>{error}</div>
           )}
-          <div className='mb-4 button'>
+          <div className=' button mt-2 mb-[-0.31rem]'>
             <button
               type='submit'
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded p-2'
             >
               Submit
             </button>
